@@ -40,7 +40,7 @@ gem 'net-ldap', '~> 0.18'
 # https://github.com/dlindahl/omniauth-cas/pull/68
 gem 'omniauth-cas', github: 'stanhu/omniauth-cas', ref: '4211e6d05941b4a981f9a36b49ec166cecd0e271'
 gem 'omniauth-saml', '~> 2.0'
-gem 'omniauth_openid_connect', '~> 0.6.1'
+gem 'omniauth_openid_connect', '~> 0.7.0'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection', '~> 1.0'
 
