@@ -5,7 +5,7 @@ class SearchQueryTransformer < Parslet::Transform
     attr_reader :should_clauses, :must_not_clauses, :must_clauses, :filter_clauses
 
     def initialize(clauses)
-      grouped = clauses.chunk(&:operator).to_h
+      grouped = clauses.compact.chunk(&:operator).to_h
       @should_clauses = grouped.fetch(:should, [])
       @must_not_clauses = grouped.fetch(:must_not, [])
       @must_clauses = grouped.fetch(:must, [])
@@ -63,20 +63,18 @@ class SearchQueryTransformer < Parslet::Transform
   end
 
   class TermClause
-    attr_reader :prefix, :operator, :term
+    attr_reader :operator, :term
 
-    def initialize(prefix, operator, term)
-      @prefix = prefix
+    def initialize(operator, term)
       @operator = Operator.symbol(operator)
       @term = term
     end
   end
 
   class PhraseClause
-    attr_reader :prefix, :operator, :phrase
+    attr_reader :operator, :phrase
 
-    def initialize(prefix, operator, phrase)
-      @prefix = prefix
+    def initialize(operator, phrase)
       @operator = Operator.symbol(operator)
       @phrase = phrase
     end
@@ -116,7 +114,9 @@ class SearchQueryTransformer < Parslet::Transform
         @type = :range
         @term = { gte: term, lte: term, time_zone: @options[:current_account]&.user_time_zone || 'UTC' }
       else
-        raise Mastodon::SyntaxError
+        @filter = :id
+        @type = :term
+        @term = -1
       end
     end
 
@@ -146,15 +146,17 @@ class SearchQueryTransformer < Parslet::Transform
     if clause[:prefix]
       PrefixClause.new(prefix, operator, clause[:term].to_s, current_account: current_account)
     elsif clause[:term]
-      TermClause.new(prefix, operator, clause[:term].to_s)
+      TermClause.new(operator, clause[:term].to_s)
     elsif clause[:shortcode]
-      TermClause.new(prefix, operator, ":#{clause[:term]}:")
+      TermClause.new(operator, ":#{clause[:term]}:")
     elsif clause[:phrase]
-      PhraseClause.new(prefix, operator, clause[:phrase].is_a?(Array) ? clause[:phrase].map { |p| p[:term].to_s }.join(' ') : clause[:phrase].to_s)
+      PhraseClause.new(operator, clause[:phrase].is_a?(Array) ? clause[:phrase].map { |p| p[:term].to_s }.join(' ') : clause[:phrase].to_s)
     else
       raise "Unexpected clause type: #{clause}"
     end
   end
+
+  rule(junk: subtree(:junk)) { nil }
 
   rule(query: sequence(:clauses)) { Query.new(clauses) }
 end
