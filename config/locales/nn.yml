@@ -814,6 +814,20 @@ nn:
     system_checks:
       database_schema_check:
         message_html: Det venter på databaseoverføringer. Vennligst kjør disse for å sikre at applikasjonen oppfører seg som forventet
+      elasticsearch_health_red:
+        message_html: Elasticsearch klyngen er usunn (rød status), søkefunksjoner er utilgjengelige
+      elasticsearch_health_yellow:
+        message_html: Elasticsearch klyngen er usunn (gul status), du bør vurdere å undersøke årsaken
+      elasticsearch_index_mismatch:
+        message_html: Elasticsearch indeksen ("index mappings") er utdatert. Vennligst kjør <code>tootctl search deploy --only=%{value}</code>
+      elasticsearch_preset:
+        action: Se dokumentasjon
+        message_html: Din Elasticsearch-klynge har mer enn en node, men Mastodon er ikke konfigurert til å bruke dem.
+      elasticsearch_preset_single_node:
+        action: Se dokumentasjon
+        message_html: Din Elasticsearch-klynge har bare en node, <code>ES_PRESET</code> bør settes til <code>single_node_cluster</code>.
+      elasticsearch_reset_chewy:
+        message_html: Din Elasticsearch systemindeks er utdatert på grunn av en forandring i innstillingene. Vennligst kjør <code>tootctl search deploy --reset-chewy</code> for å oppdatere den.
       elasticsearch_running_check:
         message_html: Kunne ikke koble til Elasticsearch. Kontroller at den kjører, eller deaktiver fulltekstsøk
       elasticsearch_version_check:
@@ -1432,6 +1446,7 @@ nn:
     update:
       subject: "%{name} redigerte et innlegg"
   notifications:
+    administration_emails: Administrator sine epost-varsler
     email_events: E-postvarslinger for hendelser
     email_events_hint: 'Velg hendelser som du vil motta varslinger for:'
     other_settings: Andre varslingsinnstillinger
@@ -1475,6 +1490,15 @@ nn:
     other: Anna
     posting_defaults: Innleggsstandarder
     public_timelines: Offentlege tidsliner
+  privacy:
+    hint_html: "<strong>Tilpass hvordan du vil at din profil og dine innlegg skal bli funnet.</strong> En rekke funksjoner i Mastodon kan hjelpe deg med å nå et bredere publikum når de aktiverte. Ta deg et øyeblikk til å vurdere disse innstillingene for å forsikre deg om at de passer deg og ditt bruk."
+    privacy: Personvern
+    privacy_hint_html: Kontrollér hvor mye du ønsker å dele til fordel for andre. Folk oppdager interessante profiler og kule app'er ved å bla gjennom andres følgere og ved å se hvilke app'er de bruker, men du kan velge å holde det skjult.
+    reach: Rekkevidde
+    reach_hint_html: Kontrollér om du ønsker å kunne bli oppdaget og fulgt av nye personer. Vil du at dine innlegg vises på Utforsk-siden? Vil du at andre personer skal kunne se deg i sine følgeranbefalinger? Vil du akseptere alle nye følgere automatisk, eller godkjenne hver enkelt?
+    search: Søk
+    search_hint_html: Kontrollér hvordan du ønsker å bli oppdaget. Vil du at folk skal kunne finne deg basert på dine offentlige innlegg? Vil du at personer utenfor Mastodon skal kunne finne din profil når de søker på nettet? Vennligst husk at en total utestengelse fra alle søkemotorer ikke kan garanteres for offentlig informasjon.
+    title: Personvern og rekkevidde
   privacy_policy:
     title: Retningslinjer for personvern
   reactions:
@@ -1684,6 +1708,10 @@ nn:
       default: "%d.%b %Y, %H:%M"
       month: "%b %Y"
       time: "%H:%M"
+  translation:
+    errors:
+      quota_exceeded: Tenaren si kvote for omsetjingstenesta er brukt opp.
+      too_many_requests: Det har vore for mange førespurnader til omsetjingstenesta i det siste.
   two_factor_authentication:
     add: Legg til
     disable: Slå av
